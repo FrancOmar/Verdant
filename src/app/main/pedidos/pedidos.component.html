@@ -1,0 +1,199 @@
+<div class="content-wrapper container-xxl p-0">
+  <div class="content-body">
+    <!-- Content Header Component -->
+    <app-content-header [contentHeader]="contentHeader"></app-content-header>
+
+    <!-- Statistics Section -->
+    <section id="pedidos-stats" class="mb-4">
+      <div class="row">
+        <!-- Metric Card 1: Total Orders -->
+        <div class="col-lg-4 col-sm-6 col-12 mb-2 mb-lg-0">
+          <div class="card card-congratulation-medal">
+            <div class="card-body d-flex align-items-center justify-content-between p-3">
+              <div>
+                <h2 class="font-weight-bolder mb-25 text-white-contrast">{{ stats.count }}</h2>
+                <p class="card-text font-small-3 text-muted mb-0">Total de Pedidos Realizados</p>
+              </div>
+              <div class="avatar bg-light-primary p-50 rounded">
+                <span [data-feather]="'clipboard'" class="avatar-icon text-primary font-medium-5"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric Card 2: Total Items Consumed -->
+        <div class="col-lg-4 col-sm-6 col-12 mb-2 mb-lg-0">
+          <div class="card card-congratulation-medal">
+            <div class="card-body d-flex align-items-center justify-content-between p-3">
+              <div>
+                <h2 class="font-weight-bolder mb-25 text-white-contrast">{{ stats.itemsCount }}</h2>
+                <p class="card-text font-small-3 text-muted mb-0">Bebidas Consumidas</p>
+              </div>
+              <div class="avatar bg-light-warning p-50 rounded">
+                <span [data-feather]="'coffee'" class="avatar-icon text-warning font-medium-5"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric Card 3: Total Cost (Bs.) -->
+        <div class="col-lg-4 col-sm-12 col-12">
+          <div class="card card-congratulation-medal">
+            <div class="card-body d-flex align-items-center justify-content-between p-3">
+              <div>
+                <h2 class="font-weight-bolder mb-25 text-primary">Bs. {{ stats.total | number:'1.2-2' }}</h2>
+                <p class="card-text font-small-3 text-muted mb-0">Costo Total del Consumo</p>
+              </div>
+              <div class="avatar bg-light-success p-50 rounded">
+                <span [data-feather]="'dollar-sign'" class="avatar-icon text-success font-medium-5"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Toolbar / Date Filters -->
+    <div class="card mb-4">
+      <div class="card-body py-2">
+        <div class="d-flex flex-wrap justify-content-between align-items-center">
+          <!-- Date Picker Filter -->
+          <div class="d-flex align-items-center mb-1 mb-md-0">
+            <span [data-feather]="'filter'" class="text-primary mr-50" style="width: 16px; height: 16px;"></span>
+            <label class="form-label font-weight-bold mr-2 mb-0 text-white" for="filter-date">Filtrar por Fecha:</label>
+            <div class="input-group input-group-merge" style="width: 250px;">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><span [data-feather]="'calendar'" style="width: 14px; height: 14px;"></span></span>
+              </div>
+              <input
+                type="date"
+                id="filter-date"
+                class="form-control text-white"
+                [(ngModel)]="selectedDate"
+              />
+            </div>
+            <!-- Clear/Show All Button next to it -->
+            <button 
+              type="button" 
+              class="btn btn-icon btn-flat-secondary ml-1 rounded-circle" 
+              (click)="selectedDate = ''"
+              ngbTooltip="Mostrar Todo el Historial"
+              *ngIf="selectedDate"
+              rippleEffect
+            >
+              <span [data-feather]="'refresh-cw'" style="width: 14px; height: 14px;"></span>
+            </button>
+          </div>
+
+          <!-- Clear History Button -->
+          <button 
+            class="btn btn-outline-danger d-flex align-items-center" 
+            (click)="clearHistory()"
+            *ngIf="stats.count > 0"
+            rippleEffect
+          >
+            <span [data-feather]="'trash-2'" class="mr-50"></span>
+            <span>Vaciar Consumo Diario</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Table / List -->
+    <section id="pedidos-list">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            
+            <div class="card-header border-bottom">
+              <h4 class="card-title font-weight-bold mb-0">Detalle de Consumo Diario</h4>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive" *ngIf="filteredPedidos.length > 0">
+              <table class="table table-hover table-striped mb-0">
+                <thead>
+                  <tr>
+                    <th style="width: 120px;">Código Pedido</th>
+                    <th style="width: 180px;">Fecha y Hora</th>
+                    <th style="width: 200px;">Cliente</th>
+                    <th>Detalle de Bebidas Consumidas</th>
+                    <th style="width: 150px;" class="text-right">Total Consumo</th>
+                    <th style="width: 100px;" class="text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let pedido of filteredPedidos">
+                    <td>
+                      <span class="badge badge-light-primary font-weight-bold">#P-{{ pedido.id }}</span>
+                    </td>
+                    <td>
+                      <div class="d-flex flex-column">
+                        <span class="font-weight-bold text-dark">{{ formatFriendlyDate(pedido.dateStr) }}</span>
+                        <small class="text-muted"><span [data-feather]="'clock'" class="mr-25" style="width: 12px; height: 12px;"></span>{{ pedido.timeStr }}</small>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex flex-column" *ngIf="pedido.clientName; else noClient">
+                        <span class="font-weight-bold text-dark">{{ pedido.clientName }}</span>
+                        <small class="text-muted"><span [data-feather]="'phone'" class="mr-25" style="width: 12px; height: 12px;"></span>{{ pedido.clientPhone }}</small>
+                      </div>
+                      <ng-template #noClient>
+                        <span class="text-muted font-small-3">-</span>
+                      </ng-template>
+                    </td>
+                    <td>
+                      <div class="d-flex flex-wrap align-items-center">
+                        <span 
+                          class="badge badge-pill badge-light-secondary mr-50 mb-25 py-50 px-75 font-weight-bold text-dark"
+                          *ngFor="let item of pedido.items"
+                        >
+                          <span [data-feather]="'chevrons-right'" class="text-primary mr-25" style="width: 12px; height: 12px;"></span>
+                          {{ item.name }} 
+                          <span class="badge badge-primary font-weight-bolder ml-50">{{ item.quantity }}</span>
+                        </span>
+                      </div>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-weight-bolder text-primary h5 mb-0">
+                        Bs. {{ pedido.total | number:'1.2-2' }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <button
+                        type="button"
+                        class="btn btn-icon btn-flat-danger btn-sm rounded-circle"
+                        (click)="deletePedido(pedido.id)"
+                        ngbTooltip="Eliminar Registro"
+                        rippleEffect
+                      >
+                        <span [data-feather]="'trash-2'"></span>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty State -->
+            <div class="text-center py-5 my-2" *ngIf="filteredPedidos.length === 0">
+              <div class="my-2">
+                <span [data-feather]="'clipboard'" class="text-muted mb-2" style="width: 64px; height: 64px;"></span>
+                <h4 class="text-muted font-weight-bold">No hay pedidos registrados</h4>
+                <p class="text-muted">
+                  No se registraron consumos para la fecha seleccionada: 
+                  <strong>{{ selectedDate ? formatFriendlyDate(selectedDate) : 'Todo el Historial' }}</strong>.
+                </p>
+                <a class="btn btn-primary btn-sm mt-1" routerLink="/servicios">
+                  <span [data-feather]="'plus'" class="mr-50"></span>
+                  Ir a realizar un pedido
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

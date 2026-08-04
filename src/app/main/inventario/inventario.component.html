@@ -1,0 +1,224 @@
+<div class="content-wrapper container-xxl p-0">
+  <div class="content-body">
+    <!-- Content Header Component -->
+    <app-content-header [contentHeader]="contentHeader"></app-content-header>
+
+    <!-- Inventory Section -->
+    <section id="inventario-view">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <!-- Card Header -->
+            <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
+              <div>
+                <h4 class="card-title">{{ 'INVENTARIO.TITLE' | translate }}</h4>
+                <p class="card-text text-muted mb-0">{{ 'INVENTARIO.SUBTITLE' | translate }}</p>
+              </div>
+              <div class="card-actions">
+                <button class="btn btn-primary d-flex align-items-center" (click)="openAddModal(addModal)" rippleEffect>
+                  <span [data-feather]="'plus'" class="mr-50"></span>
+                  <span>{{ 'INVENTARIO.ADD_BUTTON' | translate }}</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Card Body & Table -->
+            <div class="table-responsive">
+              <table class="table table-hover table-striped mb-0">
+                <thead>
+                  <tr>
+                    <th>{{ 'INVENTARIO.TABLE.PRODUCT' | translate }}</th>
+                    <th>{{ 'INVENTARIO.TABLE.SKU' | translate }}</th>
+                    <th>{{ 'INVENTARIO.TABLE.CATEGORY' | translate }}</th>
+                    <th class="text-right">{{ 'INVENTARIO.TABLE.STOCK' | translate }}</th>
+                    <th class="text-right">{{ 'INVENTARIO.TABLE.PRICE' | translate }}</th>
+                    <th class="text-center">{{ 'INVENTARIO.TABLE.STATUS' | translate }}</th>
+                    <th class="text-center">{{ 'INVENTARIO.TABLE.ACTIONS' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of inventoryItems">
+                    <td>
+                      <span class="font-weight-bold text-primary">{{ item.name }}</span>
+                    </td>
+                    <td>
+                      <span class="badge badge-light-secondary font-weight-bold">{{ item.sku }}</span>
+                    </td>
+                    <td>{{ item.category }}</td>
+                    <td class="text-right font-weight-bold">{{ item.stock }}</td>
+                    <td class="text-right">{{ item.price | currency:'USD':'symbol':'1.2-2' }}</td>
+                    <td class="text-center">
+                      <span
+                        class="badge badge-pill font-weight-bold"
+                        [ngClass]="{
+                          'badge-light-success': item.status === 'IN_STOCK',
+                          'badge-light-warning': item.status === 'LOW_STOCK',
+                          'badge-light-danger': item.status === 'OUT_OF_STOCK'
+                        }"
+                      >
+                        {{ 'INVENTARIO.STATUS.' + item.status | translate }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <button
+                        type="button"
+                        class="btn btn-icon btn-flat-danger btn-sm rounded-circle"
+                        (click)="deleteItem(item.id)"
+                        ngbTooltip="Eliminar"
+                        rippleEffect
+                      >
+                        <span [data-feather]="'trash-2'"></span>
+                      </button>
+                    </td>
+                  </tr>
+                  <!-- Empty State -->
+                  <tr *ngIf="inventoryItems.length === 0">
+                    <td colspan="7" class="text-center py-4">
+                      <div class="my-2">
+                        <span [data-feather]="'box'" class="text-muted mb-1" style="width: 48px; height: 48px;"></span>
+                        <p class="text-muted font-medium-2">No hay productos registrados en el inventario.</p>
+                        <button class="btn btn-outline-primary btn-sm" (click)="openAddModal(addModal)">
+                          Agregar el primer producto
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal Form (Add Product) -->
+    <ng-template #addModal let-modal>
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-bold">{{ 'INVENTARIO.MODAL.ADD_TITLE' | translate }}</h5>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit(modal)">
+        <div class="modal-body">
+          <!-- Product Name -->
+          <div class="form-group mb-2">
+            <label class="form-label font-weight-bold" for="product-name">
+              {{ 'INVENTARIO.MODAL.PRODUCT_NAME' | translate }} <span class="text-danger">*</span>
+            </label>
+            <input
+              type="text"
+              id="product-name"
+              class="form-control"
+              formControlName="name"
+              [ngClass]="{ 'is-invalid': submitted && f.name.errors }"
+              placeholder="{{ 'INVENTARIO.MODAL.PRODUCT_NAME_PLACEHOLDER' | translate }}"
+              ngbAutofocus
+            />
+            <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+              <div *ngIf="f.name.errors.required">{{ 'INVENTARIO.MODAL.REQUIRED' | translate }}</div>
+            </div>
+          </div>
+
+          <!-- SKU and Category Row -->
+          <div class="row">
+            <div class="col-md-6">
+              <!-- SKU -->
+              <div class="form-group mb-2">
+                <label class="form-label font-weight-bold" for="product-sku">
+                  {{ 'INVENTARIO.MODAL.SKU' | translate }} <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="product-sku"
+                  class="form-control"
+                  formControlName="sku"
+                  [ngClass]="{ 'is-invalid': submitted && f.sku.errors }"
+                  placeholder="{{ 'INVENTARIO.MODAL.SKU_PLACEHOLDER' | translate }}"
+                />
+                <div *ngIf="submitted && f.sku.errors" class="invalid-feedback">
+                  <div *ngIf="f.sku.errors.required">{{ 'INVENTARIO.MODAL.REQUIRED' | translate }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <!-- Category -->
+              <div class="form-group mb-2">
+                <label class="form-label font-weight-bold" for="product-category">
+                  {{ 'INVENTARIO.MODAL.CATEGORY' | translate }} <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="product-category"
+                  class="form-control"
+                  formControlName="category"
+                  [ngClass]="{ 'is-invalid': submitted && f.category.errors }"
+                >
+                  <option value="">{{ 'INVENTARIO.MODAL.CATEGORY_SELECT' | translate }}</option>
+                  <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+                </select>
+                <div *ngIf="submitted && f.category.errors" class="invalid-feedback">
+                  <div *ngIf="f.category.errors.required">{{ 'INVENTARIO.MODAL.REQUIRED' | translate }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stock and Price Row -->
+          <div class="row">
+            <div class="col-md-6">
+              <!-- Stock -->
+              <div class="form-group mb-2">
+                <label class="form-label font-weight-bold" for="product-stock">
+                  {{ 'INVENTARIO.MODAL.STOCK' | translate }} <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="product-stock"
+                  class="form-control"
+                  formControlName="stock"
+                  [ngClass]="{ 'is-invalid': submitted && f.stock.errors }"
+                  placeholder="{{ 'INVENTARIO.MODAL.STOCK_PLACEHOLDER' | translate }}"
+                />
+                <div *ngIf="submitted && f.stock.errors" class="invalid-feedback">
+                  <div *ngIf="f.stock.errors.required">{{ 'INVENTARIO.MODAL.REQUIRED' | translate }}</div>
+                  <div *ngIf="f.stock.errors.min">{{ 'INVENTARIO.MODAL.MIN_VALUE' | translate }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <!-- Price -->
+              <div class="form-group mb-2">
+                <label class="form-label font-weight-bold" for="product-price">
+                  {{ 'INVENTARIO.MODAL.PRICE' | translate }} <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  id="product-price"
+                  class="form-control"
+                  formControlName="price"
+                  [ngClass]="{ 'is-invalid': submitted && f.price.errors }"
+                  placeholder="{{ 'INVENTARIO.MODAL.PRICE_PLACEHOLDER' | translate }}"
+                />
+                <div *ngIf="submitted && f.price.errors" class="invalid-feedback">
+                  <div *ngIf="f.price.errors.required">{{ 'INVENTARIO.MODAL.REQUIRED' | translate }}</div>
+                  <div *ngIf="f.price.errors.min">{{ 'INVENTARIO.MODAL.MIN_VALUE' | translate }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('Cancel click')" rippleEffect>
+            {{ 'INVENTARIO.MODAL.CANCEL' | translate }}
+          </button>
+          <button type="submit" class="btn btn-primary" rippleEffect>
+            {{ 'INVENTARIO.MODAL.SAVE' | translate }}
+          </button>
+        </div>
+      </form>
+    </ng-template>
+  </div>
+</div>

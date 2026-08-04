@@ -1,0 +1,211 @@
+<div class="content-wrapper container-xxl p-0">
+  <div class="content-body">
+    <!-- Content Header Component -->
+    <app-content-header [contentHeader]="contentHeader"></app-content-header>
+
+    <!-- Users Section -->
+    <section id="usuarios-view">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <!-- Card Header -->
+            <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
+              <div>
+                <h4 class="card-title">{{ 'USUARIOS.TITLE' | translate }}</h4>
+                <p class="card-text text-muted mb-0">{{ 'USUARIOS.SUBTITLE' | translate }}</p>
+              </div>
+              <div class="card-actions">
+                <button class="btn btn-primary d-flex align-items-center" (click)="openAddModal(addModal)" rippleEffect>
+                  <span [data-feather]="'plus'" class="mr-50"></span>
+                  <span>{{ 'USUARIOS.ADD_BUTTON' | translate }}</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Card Body & Table -->
+            <div class="table-responsive">
+              <table class="table table-hover table-striped mb-0">
+                <thead>
+                  <tr>
+                    <th>{{ 'USUARIOS.TABLE.NAME' | translate }}</th>
+                    <th>{{ 'USUARIOS.TABLE.USERNAME' | translate }}</th>
+                    <th>{{ 'USUARIOS.TABLE.ROLE' | translate }}</th>
+                    <th class="text-center">{{ 'USUARIOS.TABLE.STATUS' | translate }}</th>
+                    <th class="text-center">{{ 'USUARIOS.TABLE.ACTIONS' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of userItems">
+                    <td>
+                      <span class="font-weight-bold text-primary">{{ item.fullName }}</span>
+                    </td>
+                    <td>
+                      <span class="badge badge-light-secondary font-weight-bold">@{{ item.username }}</span>
+                    </td>
+                    <td>
+                      <span
+                        class="badge badge-pill font-weight-bold"
+                        [ngClass]="{
+                          'badge-light-primary': item.role === 'ADMIN',
+                          'badge-light-warning': item.role === 'STAFF',
+                          'badge-light-info': item.role === 'CLIENT'
+                        }"
+                      >
+                        {{ 'USUARIOS.ROLE.' + item.role | translate }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <span
+                        class="badge badge-pill font-weight-bold"
+                        [ngClass]="{
+                          'badge-light-success': item.status === 'ACTIVE',
+                          'badge-light-danger': item.status === 'INACTIVE'
+                        }"
+                      >
+                        {{ 'USUARIOS.STATUS.' + item.status | translate }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <button
+                        type="button"
+                        class="btn btn-icon btn-flat-danger btn-sm rounded-circle"
+                        (click)="deleteItem(item.id)"
+                        ngbTooltip="Eliminar"
+                        rippleEffect
+                      >
+                        <span [data-feather]="'trash-2'"></span>
+                      </button>
+                    </td>
+                  </tr>
+                  <!-- Empty State -->
+                  <tr *ngIf="userItems.length === 0">
+                    <td colspan="5" class="text-center py-4">
+                      <div class="my-2">
+                        <span [data-feather]="'users'" class="text-muted mb-1" style="width: 48px; height: 48px;"></span>
+                        <p class="text-muted font-medium-2">No hay personal registrado en el sistema.</p>
+                        <button class="btn btn-outline-primary btn-sm" (click)="openAddModal(addModal)">
+                          Agregar el primer usuario
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal Form (Add User) -->
+    <ng-template #addModal let-modal>
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-bold">{{ 'USUARIOS.MODAL.ADD_TITLE' | translate }}</h5>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit(modal)">
+        <div class="modal-body">
+          <!-- Full Name -->
+          <div class="form-group mb-2">
+            <label class="form-label font-weight-bold" for="user-fullname">
+              {{ 'USUARIOS.MODAL.FULL_NAME' | translate }} <span class="text-danger">*</span>
+            </label>
+            <input
+              type="text"
+              id="user-fullname"
+              class="form-control"
+              formControlName="fullName"
+              [ngClass]="{ 'is-invalid': submitted && f.fullName.errors }"
+              placeholder="{{ 'USUARIOS.MODAL.FULL_NAME_PLACEHOLDER' | translate }}"
+              ngbAutofocus
+            />
+            <div *ngIf="submitted && f.fullName.errors" class="invalid-feedback">
+              <div *ngIf="f.fullName.errors.required">{{ 'USUARIOS.MODAL.REQUIRED' | translate }}</div>
+            </div>
+          </div>
+
+          <!-- Username -->
+          <div class="form-group mb-2">
+            <label class="form-label font-weight-bold" for="user-username">
+              {{ 'USUARIOS.MODAL.USERNAME' | translate }} <span class="text-danger">*</span>
+            </label>
+            <div class="input-group input-group-merge">
+              <div class="input-group-prepend">
+                <span class="input-group-text">@</span>
+              </div>
+              <input
+                type="text"
+                id="user-username"
+                class="form-control"
+                formControlName="username"
+                [ngClass]="{ 'is-invalid': submitted && f.username.errors }"
+                placeholder="{{ 'USUARIOS.MODAL.USERNAME_PLACEHOLDER' | translate }}"
+              />
+              <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                <div *ngIf="f.username.errors.required">{{ 'USUARIOS.MODAL.REQUIRED' | translate }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Role and Status Row -->
+          <div class="row">
+            <div class="col-md-6">
+              <!-- Role -->
+              <div class="form-group mb-2">
+                <label class="form-label font-weight-bold" for="user-role">
+                  {{ 'USUARIOS.MODAL.ROLE' | translate }} <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="user-role"
+                  class="form-control"
+                  formControlName="role"
+                  [ngClass]="{ 'is-invalid': submitted && f.role.errors }"
+                >
+                  <option value="">{{ 'USUARIOS.MODAL.ROLE_SELECT' | translate }}</option>
+                  <option *ngFor="let rol of roles" [value]="rol">
+                    {{ 'USUARIOS.ROLE.' + rol | translate }}
+                  </option>
+                </select>
+                <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
+                  <div *ngIf="f.role.errors.required">{{ 'USUARIOS.MODAL.REQUIRED' | translate }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <!-- Status -->
+              <div class="form-group mb-2">
+                <label class="form-label font-weight-bold" for="user-status">
+                  {{ 'USUARIOS.MODAL.STATUS' | translate }} <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="user-status"
+                  class="form-control"
+                  formControlName="status"
+                  [ngClass]="{ 'is-invalid': submitted && f.status.errors }"
+                >
+                  <option value="ACTIVE">{{ 'USUARIOS.STATUS.ACTIVE' | translate }}</option>
+                  <option value="INACTIVE">{{ 'USUARIOS.STATUS.INACTIVE' | translate }}</option>
+                </select>
+                <div *ngIf="submitted && f.status.errors" class="invalid-feedback">
+                  <div *ngIf="f.status.errors.required">{{ 'USUARIOS.MODAL.REQUIRED' | translate }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('Cancel click')" rippleEffect>
+            {{ 'USUARIOS.MODAL.CANCEL' | translate }}
+          </button>
+          <button type="submit" class="btn btn-primary" rippleEffect>
+            {{ 'USUARIOS.MODAL.SAVE' | translate }}
+          </button>
+        </div>
+      </form>
+    </ng-template>
+  </div>
+</div>

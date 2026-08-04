@@ -1,0 +1,201 @@
+/*================================================================================
+	Item Name: Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template
+	Author: PIXINVENT
+	Author URL: http://www.themeforest.net/user/pixinvent
+================================================================================*/
+
+// Global Customizations (Playboy Dark Theme)
+body.dark-layout {
+  background-color: #08080a !important;
+  color: #e2e8f0;
+
+  // Custom Scrollbars across the entire app
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #08080a;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 0, 127, 0.4);
+    border-radius: 4px;
+    
+    &:hover {
+      background: rgba(255, 0, 127, 0.6);
+    }
+  }
+
+  // Sidebar Menu Customizations
+  .main-menu.menu-dark {
+    background-color: #0f0f13 !important;
+    border-right: 1px solid rgba(255, 0, 127, 0.12) !important;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) !important;
+
+    .navigation {
+      background-color: #0f0f13 !important;
+
+      li {
+        &.active > a {
+          background: linear-gradient(118deg, #ff007f, rgba(255, 0, 127, 0.7)) !important;
+          box-shadow: 0 0 10px rgba(255, 0, 127, 0.4) !important;
+          color: #ffffff !important;
+          font-weight: 700;
+
+          i, svg {
+            color: #ffffff !important;
+          }
+        }
+
+        a {
+          color: #b4b7bd;
+
+          &:hover {
+            color: #ff007f !important;
+            
+            i, svg {
+              color: #ff007f !important;
+            }
+          }
+        }
+      }
+    }
+    
+    .menu-header {
+      color: #ff007f !important;
+      span {
+        color: #ff007f !important;
+      }
+    }
+  }
+
+  // Navbar Styling
+  .header-navbar {
+    background-color: #0f0f13 !important;
+    border-bottom: 1px solid rgba(255, 0, 127, 0.12) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+
+    .navbar-container {
+      background-color: #0f0f13 !important;
+    }
+
+    .nav-link {
+      color: #e2e8f0 !important;
+      
+      &:hover {
+        color: #ff007f !important;
+      }
+    }
+  }
+
+  // Cards & Layout Components
+  .card {
+    background-color: #0f0f13 !important;
+    border: 1px solid rgba(255, 0, 127, 0.15) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+
+    .card-header {
+      border-bottom: 1px solid rgba(255, 0, 127, 0.1) !important;
+    }
+  }
+
+  // Tables
+  .table {
+    background-color: #0f0f13 !important;
+    color: #e2e8f0 !important;
+
+    th {
+      background-color: #16161e !important;
+      color: #ff007f !important;
+      border-bottom: 1px solid rgba(255, 0, 127, 0.2) !important;
+      font-weight: bold;
+    }
+
+    td {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+      color: #e2e8f0;
+    }
+
+    tr:hover {
+      background-color: rgba(255, 0, 127, 0.03) !important;
+    }
+  }
+
+  // Form Controls
+  .form-control, .input-group-text, .custom-select {
+    background-color: #16161e !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+
+    &:focus {
+      border-color: #ff007f !important;
+      box-shadow: 0 0 8px rgba(255, 0, 127, 0.25) !important;
+    }
+  }
+
+  // Modals
+  .modal-content {
+    background-color: #0f0f13 !important;
+    border: 1px solid rgba(255, 0, 127, 0.3) !important;
+    box-shadow: 0 0 25px rgba(255, 0, 127, 0.2) !important;
+    color: #ffffff;
+
+    .modal-header {
+      background-color: #08080a !important;
+      border-bottom: 1px solid rgba(255, 0, 127, 0.15) !important;
+    }
+
+    .modal-footer {
+      background-color: #08080a !important;
+      border-top: 1px solid rgba(255, 0, 127, 0.15) !important;
+    }
+  }
+
+  // Badges & Accents
+  .badge-light-primary {
+    background-color: rgba(255, 0, 127, 0.12) !important;
+    color: #ff007f !important;
+  }
+  
+  .badge-light-success {
+    background-color: rgba(212, 175, 55, 0.12) !important;
+    color: #d4af37 !important;
+  }
+
+  // Pagination
+  .page-item {
+    &.active .page-link {
+      background-color: #ff007f !important;
+      border-color: #ff007f !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 10px rgba(255, 0, 127, 0.4) !important;
+    }
+
+    .page-link {
+      background-color: #16161e !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
+      color: #b4b7bd !important;
+
+      &:hover {
+        color: #ff007f !important;
+      }
+    }
+  }
+
+  // Text Color Overrides for Gold/Pink Accent highlights
+  .font-weight-bolder.text-primary,
+  .text-primary.h5,
+  .text-primary.h4 {
+    color: #d4af37 !important; // Gold for totals / prices
+  }
+
+  // Custom tooltips
+  .tooltip-inner {
+    background-color: #ff007f !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 8px rgba(255, 0, 127, 0.4) !important;
+  }
+  .arrow::before {
+    border-top-color: #ff007f !important;
+  }
+}

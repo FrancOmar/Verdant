@@ -1,0 +1,268 @@
+/* Drink Catalog Component Specific Styles */
+.drink-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 0, 127, 0.15) !important;
+  background-color: #0e0e12;
+
+  &:hover {
+    transform: translateY(-5px);
+    border-color: #ff007f !important;
+    box-shadow: 0 12px 28px rgba(255, 0, 127, 0.25) !important;
+  }
+
+  &.selected {
+    border-color: #ff007f !important;
+    box-shadow: 0 0 20px rgba(255, 0, 127, 0.3) !important;
+  }
+
+  &.out-of-stock {
+    opacity: 0.6;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    
+    .drink-img {
+      filter: grayscale(100%);
+    }
+  }
+}
+
+.drink-img {
+  height: 180px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
+.rounded-container {
+  overflow: hidden;
+  border-radius: 8px;
+  height: 180px;
+}
+
+.out-of-stock-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.max-width-75 {
+  max-width: 75%;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed !important;
+}
+
+.selected-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  
+  &:last-child {
+    border-bottom: none !important;
+  }
+}
+
+.order-summary-card {
+  position: sticky;
+  top: 90px;
+  border-radius: 12px;
+}
+
+/* Redesigned proportional inputs */
+.input-group {
+  .btn {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+}
+
+/* Sidebar Item List (Scrollable) */
+.selected-items-list {
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 6px;
+  margin-right: -6px;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 0, 127, 0.3);
+    border-radius: 4px;
+    
+    &:hover {
+      background: rgba(255, 0, 127, 0.5);
+    }
+  }
+}
+
+/* Playboy Receipt Ticket Popup Styles */
+.playboy-ticket {
+  background-color: #0f0f12 !important;
+  color: #ffffff !important;
+  border-radius: 8px;
+  box-shadow: 0 0 25px rgba(255, 0, 127, 0.25);
+  border: 1px solid rgba(255, 0, 127, 0.35);
+  font-family: 'Courier New', Courier, monospace;
+
+  .text-muted-custom {
+    color: #888888 !important;
+  }
+}
+
+.vip-badge {
+  display: inline-block;
+  background-color: #ff007f;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 900;
+  padding: 4px 12px;
+  border-radius: 50px;
+  letter-spacing: 2.5px;
+  box-shadow: 0 0 12px rgba(255, 0, 127, 0.6);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.playboy-divider {
+  border-top: 1px dashed rgba(255, 0, 127, 0.35);
+  width: 100%;
+  height: 1px;
+}
+
+.border-pink-glow {
+  border-top: 1.5px solid #ff007f !important;
+  box-shadow: 0 -2px 10px rgba(255, 0, 127, 0.3);
+}
+
+.btn-playboy {
+  background-color: #ff007f !important;
+  border-color: #ff007f !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(255, 0, 127, 0.35) !important;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: #e60072 !important;
+    border-color: #e60072 !important;
+    box-shadow: 0 6px 16px rgba(255, 0, 127, 0.5) !important;
+    transform: translateY(-1px);
+  }
+}
+
+/* Mobile Responsive Styling (max-width: 576px) */
+@media (max-width: 576px) {
+  // catalog title font scaling
+  .drink-card {
+    .card-title {
+      font-size: 0.9rem !important;
+      margin-bottom: 0.2rem !important;
+    }
+    
+    // adjust paddings for mobile columns
+    .card-body {
+      padding: 0.75rem !important;
+    }
+  }
+
+  // Adjust card image height for 2 columns grid
+  .drink-img, .rounded-container {
+    height: 120px !important;
+  }
+
+  // Reduce size of rating badges
+  .badge-light-warning, .badge-light-danger {
+    padding: 0.35rem 0.5rem !important;
+    font-size: 0.7rem !important;
+  }
+
+  // Make quantity input-group compact
+  .input-group {
+    height: 32px !important;
+    
+    .btn {
+      padding: 0.25rem 0.45rem !important;
+      font-size: 0.7rem !important;
+      
+      svg {
+        width: 11px !important;
+        height: 11px !important;
+      }
+    }
+    
+    .form-control {
+      font-size: 0.85rem !important;
+      padding: 0.25rem !important;
+    }
+  }
+
+  // Make normal select buttons smaller
+  .btn-primary.btn-block {
+    height: 32px !important;
+    font-size: 0.75rem !important;
+    padding: 0.4rem 0.6rem !important;
+    
+    svg {
+      width: 12px !important;
+      height: 12px !important;
+    }
+  }
+}
+
+/* Mobile Floating Cart Bar Styles */
+.mobile-cart-bar {
+  z-index: 1040;
+  border-top: 2px solid #ff007f;
+  box-shadow: 0 -4px 20px rgba(255, 0, 127, 0.25) !important;
+  background-color: #0f0f13 !important;
+  height: 65px;
+  
+  .avatar {
+    background-color: rgba(255, 0, 127, 0.15) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    
+    span, svg {
+      color: #ff007f !important;
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  h6 {
+    font-size: 0.85rem !important;
+  }
+  
+  small {
+    font-size: 0.75rem !important;
+  }
+}
+
+.shadow-pink-glow {
+  box-shadow: 0 0 10px rgba(255, 0, 127, 0.4) !important;
+}
+
+// Adjust layout padding at bottom so floating cart bar doesn't cover anything
+@media (max-width: 576px) {
+  .content-wrapper {
+    padding-bottom: 75px !important;
+  }
+}

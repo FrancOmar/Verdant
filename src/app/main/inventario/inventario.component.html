@@ -46,7 +46,7 @@
                     </td>
                     <td>{{ item.category }}</td>
                     <td class="text-right font-weight-bold">{{ item.stock }}</td>
-                    <td class="text-right">{{ item.price | currency:'USD':'symbol':'1.2-2' }}</td>
+                    <td class="text-right">Bs. {{ item.price | number:'1.2-2' }}</td>
                     <td class="text-center">
                       <span
                         class="badge badge-pill font-weight-bold"

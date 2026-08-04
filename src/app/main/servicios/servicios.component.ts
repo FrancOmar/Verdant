@@ -401,8 +401,8 @@ export class ServiciosComponent implements OnInit {
     ctx.font = 'italic 11px Georgia, serif';
     ctx.fillText('Gracias por ser parte de la exclusividad.', canvas.width / 2, currentY);
 
-    // Guardar URL de la imagen para su descarga
-    this.lastTicketDataUrl = canvas.toDataURL('image/png');
+    // Guardar URL de la imagen para su descarga como JPG
+    this.lastTicketDataUrl = canvas.toDataURL('image/jpeg', 0.95);
 
     // Convertir a blob de imagen y copiar
     return new Promise((resolve) => {
@@ -447,7 +447,7 @@ export class ServiciosComponent implements OnInit {
       // 1. Forzar descarga de la imagen en el navegador
       if (this.lastTicketDataUrl) {
         const link = document.createElement('a');
-        link.download = `ticket_${ticket.clientName.replace(/\s+/g, '_')}.png`;
+        link.download = `ticket_${ticket.clientName.replace(/\s+/g, '_')}.jpg`;
         link.href = this.lastTicketDataUrl;
         document.body.appendChild(link);
         link.click();

@@ -404,27 +404,29 @@ export class ServiciosComponent implements OnInit {
     // Guardar URL de la imagen para su descarga como JPG
     this.lastTicketDataUrl = canvas.toDataURL('image/jpeg', 0.95);
 
-    // Convertir a blob de imagen y copiar
-    return new Promise((resolve) => {
-      canvas.toBlob((blob) => {
-        if (!blob) {
-          resolve(false);
-          return;
-        }
-        try {
-          const item = new ClipboardItem({ 'image/png': blob });
-          navigator.clipboard.write([item]).then(() => {
-            resolve(true);
-          }).catch(err => {
-            console.error('Error al copiar al portapapeles', err);
-            resolve(false);
-          });
-        } catch (e) {
-          console.error('Excepción al copiar imagen', e);
-          resolve(false);
-        }
-      }, 'image/png');
-    });
+    // Copiar a portapapeles de forma síncrona pasando una Promesa de Blob a ClipboardItem
+    try {
+      const blobPromise = new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error('No se pudo generar el blob'));
+          }
+        }, 'image/png');
+      });
+
+      const item = new ClipboardItem({ 'image/png': blobPromise });
+      return navigator.clipboard.write([item]).then(() => {
+        return true;
+      }).catch(err => {
+        console.error('Error al copiar al portapapeles:', err);
+        return false;
+      });
+    } catch (e) {
+      console.error('Excepción al copiar al portapapeles:', e);
+      return Promise.resolve(false);
+    }
   }
 
   // Genera y copia la imagen del ticket, y redirige a WhatsApp

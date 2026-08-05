@@ -1,0 +1,189 @@
+<div class="content-wrapper container-xxl p-0">
+  <div class="content-body">
+    <!-- Content Header Component -->
+    <app-content-header [contentHeader]="contentHeader"></app-content-header>
+
+    <!-- KPI Statistics Row -->
+    <section id="reportes-kpis" class="mb-4">
+      <div class="row">
+        <!-- Valuation Card -->
+        <div class="col-lg-4 col-sm-6 col-12 mb-2 mb-lg-0">
+          <div class="card card-congratulation-medal bg-black-vip border-pink">
+            <div class="card-body d-flex align-items-center justify-content-between p-3">
+              <div>
+                <h2 class="font-weight-bolder text-primary mb-25">Bs. {{ totalStockValuation | number:'1.2-2' }}</h2>
+                <p class="card-text font-small-3 text-muted mb-0">Valorización del Inventario</p>
+              </div>
+              <div class="avatar bg-light-success p-50 rounded-circle">
+                <span [data-feather]="'dollar-sign'" class="avatar-icon text-success font-medium-5"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Physical Stock Card -->
+        <div class="col-lg-4 col-sm-6 col-12 mb-2 mb-lg-0">
+          <div class="card card-congratulation-medal bg-black-vip border-pink">
+            <div class="card-body d-flex align-items-center justify-content-between p-3">
+              <div>
+                <h2 class="font-weight-bolder text-white-contrast mb-25">{{ totalStockQty }} uds</h2>
+                <p class="card-text font-small-3 text-muted mb-0">Bebidas Físicas en Stock</p>
+              </div>
+              <div class="avatar bg-light-primary p-50 rounded-circle">
+                <span [data-feather]="'archive'" class="avatar-icon text-primary font-medium-5"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Critical Out-of-Stock Card -->
+        <div class="col-lg-4 col-sm-12 col-12">
+          <div class="card card-congratulation-medal bg-black-vip border-pink">
+            <div class="card-body d-flex align-items-center justify-content-between p-3">
+              <div>
+                <div class="d-flex align-items-center mb-25">
+                  <h2 class="font-weight-bolder text-danger mb-0 mr-2">{{ outOfStockCount }}</h2>
+                  <span class="badge badge-light-danger font-small-2 font-weight-bold">Agotadas</span>
+                  <h2 class="font-weight-bolder text-warning mb-0 mx-2">{{ lowStockCount }}</h2>
+                  <span class="badge badge-light-warning font-small-2 font-weight-bold">Críticas</span>
+                </div>
+                <p class="card-text font-small-3 text-muted mb-0">Productos con Reposición Urgente</p>
+              </div>
+              <div class="avatar bg-light-danger p-50 rounded-circle">
+                <span [data-feather]="'alert-triangle'" class="avatar-icon text-danger font-medium-5"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Reports Row -->
+    <div class="row">
+      <!-- Left Column: Most Requested Drinks (Sales) -->
+      <div class="col-lg-7 col-12 mb-4 mb-lg-0">
+        <div class="card h-100 card-vip">
+          <div class="card-header bg-transparent border-bottom">
+            <h4 class="card-title font-weight-bolder mb-0 text-white-contrast">
+              <span [data-feather]="'trending-up'" class="text-primary mr-50"></span>
+              Bebidas Más Requeridas (Ventas)
+            </h4>
+          </div>
+          <div class="card-body p-3 d-flex flex-column justify-content-between">
+            <!-- ApexCharts Donut Chart -->
+            <div class="chart-container text-center mb-4 py-2" *ngIf="showChart">
+              <apx-chart
+                [series]="chartOptions.series"
+                [chart]="chartOptions.chart"
+                [labels]="chartOptions.labels"
+                [colors]="chartOptions.colors"
+                [stroke]="chartOptions.stroke"
+                [legend]="chartOptions.legend"
+                [plotOptions]="chartOptions.plotOptions"
+                [dataLabels]="chartOptions.dataLabels"
+              ></apx-chart>
+            </div>
+
+            <!-- Empty State for Chart -->
+            <div class="text-center py-5" *ngIf="!showChart">
+              <span [data-feather]="'pie-chart'" class="text-muted mb-2" style="width: 48px; height: 48px;"></span>
+              <p class="text-muted font-small-3">No hay datos de consumo registrados aún. Los pedidos generados se graficarán aquí.</p>
+            </div>
+
+            <!-- Popularity Ranking Table -->
+            <div class="table-responsive">
+              <h5 class="font-weight-bold text-white-contrast mb-3">Ranking General de Popularidad</h5>
+              <table class="table table-hover table-striped mb-0">
+                <thead>
+                  <tr>
+                    <th style="width: 70px;" class="text-center">Puesto</th>
+                    <th>Bebida</th>
+                    <th style="width: 120px;" class="text-center">Unidades</th>
+                    <th style="width: 120px;" class="text-right">Ingresos</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let drink of popularDrinks | slice:0:5">
+                    <td class="text-center">
+                      <span *ngIf="drink.rank === 1" class="rank-badge rank-1" ngbTooltip="El más pedido">🥇</span>
+                      <span *ngIf="drink.rank === 2" class="rank-badge rank-2">🥈</span>
+                      <span *ngIf="drink.rank === 3" class="rank-badge rank-3">🥉</span>
+                      <span *ngIf="drink.rank > 3" class="badge badge-pill badge-light-secondary font-weight-bold">{{ drink.rank }}</span>
+                    </td>
+                    <td>
+                      <div class="d-flex flex-column">
+                        <span class="font-weight-bold text-dark">{{ drink.name }}</span>
+                        <!-- Custom progress bar under name to show proportion relative to the top seller -->
+                        <div class="progress progress-bar-xs mt-25" style="height: 4px; width: 100px;">
+                          <div 
+                            class="progress-bar bg-primary" 
+                            role="progressbar" 
+                            [style.width.%]="drink.barPercentage"
+                          ></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-center font-weight-bold">
+                      <span class="badge badge-pill badge-light-primary font-weight-bolder px-75 py-25">{{ drink.quantity }} uds</span>
+                    </td>
+                    <td class="text-right font-weight-bolder text-primary">
+                      Bs. {{ drink.revenue | number:'1.2-2' }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Current Stock Progression Levels (Inventory) -->
+      <div class="col-lg-5 col-12">
+        <div class="card h-100 card-vip">
+          <div class="card-header bg-transparent border-bottom">
+            <h4 class="card-title font-weight-bolder mb-0 text-white-contrast">
+              <span [data-feather]="'list'" class="text-primary mr-50"></span>
+              Nivel de Stock de Bebidas
+            </h4>
+          </div>
+          <div class="card-body p-3 scrollable-stock-list">
+            <p class="text-muted font-small-3 mb-4">Verifique el stock físico de sus bebidas. Las barras de progreso cambian de color para alertar sobre niveles críticos (rojo) y alertas de reposición (amarillo).</p>
+
+            <div class="stock-item mb-4" *ngFor="let item of inventoryItems">
+              <div class="d-flex justify-content-between align-items-center mb-50">
+                <span class="font-weight-bold text-white-contrast">{{ item.name }}</span>
+                <div class="d-flex align-items-center">
+                  <span class="badge badge-light-secondary font-weight-bold mr-1">{{ item.sku }}</span>
+                  <span 
+                    class="font-weight-bolder" 
+                    [ngClass]="{
+                      'text-success': item.stock > 5,
+                      'text-warning': item.stock > 0 && item.stock <= 5,
+                      'text-danger font-weight-black': item.stock === 0
+                    }"
+                  >
+                    {{ item.stock === 0 ? 'AGOTADO' : item.stock + ' uds' }}
+                  </span>
+                </div>
+              </div>
+              
+              <!-- Responsive progress bar (max reference: 80 uds) -->
+              <div class="progress progress-bar-sm" style="height: 8px; background-color: rgba(255,255,255,0.05);">
+                <div 
+                  class="progress-bar" 
+                  [ngClass]="getStockProgressClass(item.stock)"
+                  role="progressbar" 
+                  [style.width.%]="item.stock > 0 ? (item.stock / 80 * 100) : 0"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

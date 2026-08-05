@@ -27,6 +27,7 @@ import { InventarioModule } from 'app/main/inventario/inventario.module';
 import { UsuariosModule } from 'app/main/usuarios/usuarios.module';
 import { ServiciosModule } from 'app/main/servicios/servicios.module';
 import { PedidosModule } from 'app/main/pedidos/pedidos.module';
+import { ReportesModule } from 'app/main/reportes/reportes.module';
 import { JwtInterceptor, ErrorInterceptor, fakeBackendProvider } from 'app/auth/helpers';
 
 const appRoutes: Routes = [
@@ -73,7 +74,8 @@ const appRoutes: Routes = [
     InventarioModule,
     UsuariosModule,
     ServiciosModule,
-    PedidosModule
+    PedidosModule,
+    ReportesModule
   ],
 
   providers: [

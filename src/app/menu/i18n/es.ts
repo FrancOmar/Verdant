@@ -7,7 +7,8 @@ export const locale = {
       INVENTARIO: 'Inventario',
       USUARIOS: 'Usuarios',
       SERVICIOS: 'Servicios',
-      PEDIDOS: 'Pedidos'
+      PEDIDOS: 'Pedidos',
+      REPORTES: 'Reportes'
     }
   }
 }

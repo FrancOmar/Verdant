@@ -40,5 +40,13 @@ export const menu: CoreMenu[] = [
     type: 'item',
     icon: 'clipboard',
     url: 'pedidos'
+  },
+  {
+    id: 'reportes',
+    title: 'Reportes',
+    translate: 'MENU.REPORTES',
+    type: 'item',
+    icon: 'bar-chart-2',
+    url: 'reportes'
   }
 ]
